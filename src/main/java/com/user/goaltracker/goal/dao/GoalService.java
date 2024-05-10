@@ -1,6 +1,5 @@
 package com.user.goaltracker.goal.dao;
 
-import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.time.LocalDateTime;
@@ -10,9 +9,9 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -20,14 +19,11 @@ import com.mongodb.client.model.Filters;
 import com.user.goaltracker.configration.DBConfig;
 import com.user.goaltracker.goal.request.GoalPOJO;
 import com.user.goaltracker.task.request.TaskPOJO;
+import com.user.goaltracker.userlog.dao.UserLogService;
 
 public class GoalService {
-
-    // Goal createGoal(Goal goal);
-    // Goal getGoalById(String id);
-    // List<Goal> getGoalsByUserId(String userId);
-    // Goal updateGoal(String id, Goal goal);
-    // void deleteGoal(String id);
+    @Autowired
+    private UserLogService userLogService;
 
     public Document createUserGoal(Document request) {
         Document result = new Document();
@@ -64,6 +60,10 @@ public class GoalService {
             // Insert the user goal document into the collection
             mycollection.insertOne(newUserGoal);
 
+            if (newUserGoal.containsKey("_id")) {
+                userLogService.saveUserLog(request.getString("userId"),
+                        "User goal created successfully.", newUserGoal.getObjectId("_id").toHexString());
+            }
             result.put("success", true);
             result.put("message", "User goal created successfully.");
 
@@ -174,8 +174,12 @@ public class GoalService {
             Document update = new Document("$set", toupdate);
             mycollection.updateOne(filter, update);
 
+            if (request.containsKey("userId")) {
+                userLogService.saveUserLog(request.getString("userId"),
+                        "User goal updated successfully.", goalId);
+            }
             result.put("success", true);
-            result.put("message", "User goal created successfully.");
+            result.put("message", "User goal updated successfully.");
 
         } catch (IllegalArgumentException e) {
             result.put("success", false);

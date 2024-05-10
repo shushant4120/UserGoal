@@ -13,7 +13,7 @@ public class UserLogService {
 
     private final String collectionName = "userlogs";
 
-    public void saveUserLog(String userId, String action) {
+    public void saveUserLog(String userId, String action, String actionId) {
 
         try {
             MongoCollection<Document> mycollection = null;

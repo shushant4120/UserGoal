@@ -1,6 +1,5 @@
 package com.user.goaltracker.task.dao;
 
-import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.time.LocalDateTime;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -17,8 +17,12 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.user.goaltracker.configration.DBConfig;
 import com.user.goaltracker.task.request.TaskPOJO;
+import com.user.goaltracker.userlog.dao.UserLogService;
 
 public class TaskService {
+
+    @Autowired
+    private UserLogService userLogService;
 
     public Document createTask(Document request) {
         Document result = new Document();
@@ -48,6 +52,10 @@ public class TaskService {
             // Insert the task document into the collection
             mycollection.insertOne(newTask);
 
+            if (newTask.containsKey("_id")) {
+                userLogService.saveUserLog(request.getString("userId"),
+                        "User goal created successfully.", newTask.getObjectId("_id").toHexString());
+            }
             result.put("success", true);
             result.put("message", "Task created successfully.");
 
