@@ -23,8 +23,36 @@ public class UserServiceController {
             @RequestBody Document request,
             @RequestHeader Map<String, String> header) {
         try {
-            UserRegistration userRegistration = new UserRegistration();
-            Document result = userRegistration.createNewUser(request);
+            UserRegistration userManagement = new UserRegistration();
+            Document result = userManagement.createNewUser(request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/userdetails")
+    public ResponseEntity<Document> getUserDetails(
+            @RequestBody Document request,
+            @RequestHeader Map<String, String> header) {
+        try {
+            UserRegistration userManagement = new UserRegistration();
+            Document result = userManagement.getUserDetails(request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Document> loginUser(
+            @RequestBody Document request,
+            @RequestHeader Map<String, String> header) {
+        try {
+            UserRegistration userManagement = new UserRegistration();
+            Document result = userManagement.loginUser(request);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
