@@ -130,6 +130,8 @@ public class UserRegistration {
             // Update login time
             mycollection.updateOne(Filters.eq("userMobile", mobile),
                     Updates.set("lastLogin", LocalDateTime.now().toString()));
+            userLogService.saveUserLog(userDocument.getObjectId("_id").toHexString(), "Login successful.",
+                    userDocument.getObjectId("_id").toHexString());
 
             result.append("message", "Login successful.");
             result.append("userDetails", userDocument);

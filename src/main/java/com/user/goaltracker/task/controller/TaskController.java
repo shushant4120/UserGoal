@@ -1,46 +1,31 @@
-package com.user.goaltracker.users.controller;
+package com.user.goaltracker.task.controller;
 
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.bson.Document;
+import com.user.goaltracker.task.dao.TaskService;
 
 import java.util.Map;
 
-import com.user.goaltracker.users.dao.UserRegistration;
-
 @RestController
-@RequestMapping("user")
-public class UserServiceController {
+public class TaskController {
 
-    @PostMapping("/usercreation")
-    public ResponseEntity<Document> createNewUser(
-            @RequestBody Document request,
-            @RequestHeader Map<String, String> header) {
-        try {
+    @Autowired
+    private TaskService taskService;
 
-            UserRegistration userManagement = new UserRegistration();
-            Document result = userManagement.createNewUser(request);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PostMapping("/userdetails")
-    public ResponseEntity<Document> getUserDetails(
+    @PostMapping("/createTask")
+    public ResponseEntity<Document> createTask(
             @RequestBody Document request,
             @RequestHeader Map<String, String> header) {
         try {
             request.append("userId", header.get("userid"));
-            UserRegistration userManagement = new UserRegistration();
-            Document result = userManagement.getUserDetails(request);
+            Document result = taskService.createTask(request);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,13 +33,27 @@ public class UserServiceController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Document> loginUser(
+    @PostMapping("/getTaskById")
+    public ResponseEntity<Document> getTaskById(
             @RequestBody Document request,
             @RequestHeader Map<String, String> header) {
         try {
-            UserRegistration userManagement = new UserRegistration();
-            Document result = userManagement.loginUser(request);
+            request.append("userId", header.get("userid"));
+            Document result = taskService.getTaskById(request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/updateTask")
+    public ResponseEntity<Document> updateTask(
+            @RequestBody Document request,
+            @RequestHeader Map<String, String> header) {
+        try {
+            request.append("userId", header.get("userid"));
+            Document result = taskService.updateTask(request);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
