@@ -5,10 +5,13 @@ import com.mongodb.client.MongoDatabase;
 import com.user.goaltracker.configration.DBConfig;
 
 import org.bson.Document;
+import org.springframework.stereotype.Service;
+
 import com.mongodb.client.MongoClient;
 
 import java.time.LocalDateTime;
 
+@Service
 public class UserLogService {
 
     private final String collectionName = "userlogs";
@@ -24,6 +27,7 @@ public class UserLogService {
             Document logDocument = new Document()
                     .append("userId", userId)
                     .append("action", action)
+                    .append("actionId", actionId)
                     .append("timestamp", LocalDateTime.now().toString());
 
             // Insert the log document into the collection

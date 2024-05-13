@@ -2,10 +2,12 @@ package com.user.goaltracker.users.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.bson.Document;
@@ -33,14 +35,13 @@ public class UserServiceController {
         }
     }
 
-    @PostMapping("/userdetails")
+    @GetMapping("/userdetails")
     public ResponseEntity<Document> getUserDetails(
-            @RequestBody Document request,
+
             @RequestHeader Map<String, String> header) {
         try {
-            request.append("userId", header.get("userid"));
             UserRegistration userManagement = new UserRegistration();
-            Document result = userManagement.getUserDetails(request);
+            Document result = userManagement.getUserDetails(header.get("userid"));
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,13 +49,13 @@ public class UserServiceController {
         }
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<Document> loginUser(
-            @RequestBody Document request,
+            @RequestParam String mobile, @RequestParam String password,
             @RequestHeader Map<String, String> header) {
         try {
             UserRegistration userManagement = new UserRegistration();
-            Document result = userManagement.loginUser(request);
+            Document result = userManagement.loginUser(mobile, password);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
