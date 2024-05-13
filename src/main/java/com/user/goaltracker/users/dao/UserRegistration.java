@@ -12,8 +12,10 @@ import com.user.goaltracker.userlog.dao.UserLogService;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
+@Service
 public class UserRegistration {
 
     @Autowired
@@ -37,6 +40,7 @@ public class UserRegistration {
         String firstName = request.getString("firstName");
         String lastName = request.getString("lastName");
         String email = request.getString("email");
+        String password = request.getString("password");
 
         // MongoCollection<Document> mycollection =
         // mongoTemplate.getCollection(collectionName);
@@ -67,6 +71,7 @@ public class UserRegistration {
                 .append("userMobile", mobile)
                 .append("countrycode", countryCode)
                 .append("status", status)
+                .append("password", password)
                 .append("createdAt", LocalDateTime.now().toString());
 
         // Insert new user document into collection
@@ -85,10 +90,10 @@ public class UserRegistration {
         return result;
     }
 
-    public Document getUserDetails(Document request) {
+    public Document getUserDetails(String userId) {
         Document result = new Document();
         String collectionName = "users";
-        String mobile = request.getString("mobile");
+        // String mobile = request.getString("mobile");
 
         // Get MongoDB collection
         MongoClient mongoClient = DBConfig.getMongoClient();
@@ -96,7 +101,8 @@ public class UserRegistration {
         MongoCollection<Document> mycollection = database.getCollection(collectionName);
 
         // Search for the user by mobile number
-        Document userDocument = mycollection.find(Filters.eq("userMobile", mobile)).projection(Projections.excludeId())
+        Document userDocument = mycollection.find(Filters.eq("_id", new ObjectId(
+                userId))).projection(Projections.excludeId())
                 .first();
 
         if (userDocument != null) {
@@ -111,11 +117,9 @@ public class UserRegistration {
         return result;
     }
 
-    public Document loginUser(Document request) {
+    public Document loginUser(String mobile, String password) {
         Document result = new Document();
         String collectionName = "users";
-        String mobile = request.getString("mobile");
-        String password = request.getString("password");
 
         // Get MongoDB collection
         MongoClient mongoClient = DBConfig.getMongoClient();

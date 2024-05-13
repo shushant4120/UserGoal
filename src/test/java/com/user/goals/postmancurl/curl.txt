@@ -1,0 +1,25 @@
+curl --location --request POST 'http://localhost:9011/user/usercreation' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+    "countrycode":"91",
+    "mobile":"9709920466",
+    "firstName":"Eranna",
+    "lastName":"Kumar",
+    "email":"shushant.sjb2@gmail.com"
+}'
+
+
+
+curl --location --request GET 'http://localhost:9011/user/userdetails' \
+--header 'userid: 663b60116e80da41d0f2eff0' \
+--header 'Content-Type: text/plain' \
+--data-raw '{
+    "userMobile":"8951672179"
+}'
+
+
+curl --location --request GET 'http://localhost:9011/user/login?mobile=8951672179&password=Test@123'
+
+
+

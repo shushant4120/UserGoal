@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -19,6 +20,7 @@ import com.user.goaltracker.configration.DBConfig;
 import com.user.goaltracker.task.request.TaskPOJO;
 import com.user.goaltracker.userlog.dao.UserLogService;
 
+@Service
 public class TaskService {
 
     @Autowired
